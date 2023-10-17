@@ -8,6 +8,8 @@ import { infuraProvider } from 'wagmi/providers/infura'
 import "../styles/tailwind.scss"
 import { RainbowKitProvider, getDefaultWallets, darkTheme } from "@rainbow-me/rainbowkit"
 import { createClient } from "viem"
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { InjectedConnector } from 'wagmi/connectors/injected'
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, polygon, optimism, goerli, polygonMumbai],
@@ -20,15 +22,24 @@ const { connectors } = getDefaultWallets({
   projectId: '123'
 });
 
-const wagmiClient = createConfig({
+const wagmiConfig = createConfig({
   publicClient,
   webSocketPublicClient,
-  connectors: connectors
+  connectors: [
+    new MetaMaskConnector({ chains }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: 'Injected',
+        shimDisconnect: true,
+      },
+    }),
+  ],  
 })
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
-    <WagmiConfig config={wagmiClient}>
+    <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains} theme={darkTheme({
       accentColor: '#7b3fe4',
       accentColorForeground: 'white',
@@ -37,7 +48,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       overlayBlur: 'small',
     })}>
         <Component {...pageProps} />
-      </RainbowKitProvider>
+       </RainbowKitProvider>
     </WagmiConfig>
   )
 }
