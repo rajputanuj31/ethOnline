@@ -1,7 +1,7 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit"
 import React, { useState } from "react"
 import { createStytchUIClient } from "@stytch/nextjs/ui";
 import { BaseProvider, LitAuthClient } from "@lit-protocol/lit-auth-client";
+import NavBar from "@components/NavBar";
 // import { ProviderType } from '@lit-protocol/constants';
 
 
@@ -38,19 +38,19 @@ export default function Home() {
     set_jwt(authResponse.session_jwt);
   }
 
-  async function pls() {
-    const authClient = new LitAuthClient({
-      litRelayConfig: {
-          relayApiKey: process.env.LIT_RELAY_API_KEY,
-      }
-    });
-
-  }
+  // async function pls() {
+  //   const authClient = new LitAuthClient({
+  //     litRelayConfig: {
+  //         relayApiKey: process.env.LIT_RELAY_API_KEY,
+  //     }
+  //   });
+  // }
+  
 
   return (
     <>
       <div>
-
+        <NavBar/>
         <button onClick={sendOTP}>
           Send
         </button>

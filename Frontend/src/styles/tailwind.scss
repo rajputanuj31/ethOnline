@@ -9,3 +9,12 @@
 html {
   @apply antialiased;
 }
+body{
+  background-color: black;
+}
+button{
+  color: azure;
+}
+.nav{
+  display: flex;
+}

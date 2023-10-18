@@ -25,27 +25,18 @@ const { connectors } = getDefaultWallets({
 const wagmiConfig = createConfig({
   publicClient,
   webSocketPublicClient,
-  connectors: [
-    new MetaMaskConnector({ chains }),
-    new InjectedConnector({
-      chains,
-      options: {
-        name: 'Injected',
-        shimDisconnect: true,
-      },
-    }),
-  ],  
+  connectors: connectors
 })
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains} theme={darkTheme({
-      accentColor: '#7b3fe4',
+      accentColor: '#8E0000',
       accentColorForeground: 'white',
       borderRadius: 'medium',
       fontStack: 'system',
-      overlayBlur: 'small',
+      overlayBlur: 'large',
     })}>
         <Component {...pageProps} />
        </RainbowKitProvider>
