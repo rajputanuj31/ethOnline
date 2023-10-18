@@ -14,7 +14,8 @@
     "test-all": "yarn lint && yarn type-check && yarn test"
   },
   "dependencies": {
-    "@lit-protocol/lit-auth-client": "^2.2.61",
+    "@lit-protocol/lit-auth-client": "3.0.5",
+    "@lit-protocol/lit-node-client-nodejs": "3.0.5",
     "@rainbow-me/rainbowkit": "^1.1.2",
     "@stytch/nextjs": "^12.0.0",
     "buffer": "^6.0.3",
@@ -26,6 +27,7 @@
     "react-dom": "^18.0.0",
     "sass": "^1.49.9",
     "stream-browserify": "^3.0.0",
+    "stytch": "^9.0.4",
     "url": "^0.11.3",
     "viem": "^1.16.6",
     "wagmi": "^1.4.4"
