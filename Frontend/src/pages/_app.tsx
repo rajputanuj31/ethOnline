@@ -10,6 +10,9 @@ import { RainbowKitProvider, getDefaultWallets, darkTheme } from "@rainbow-me/ra
 import { createClient } from "viem"
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { InjectedConnector } from 'wagmi/connectors/injected'
+import NavBar from "@components/NavBar";
+
+
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, polygon, optimism, goerli, polygonMumbai],
@@ -38,6 +41,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         fontStack: 'system',
         overlayBlur: 'large',
       })}>
+        <NavBar/>
         <Component {...pageProps} />
       </RainbowKitProvider>
     </WagmiConfig>
