@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const authClient = new LitAuthClient({
             litRelayConfig: {
-                relayApiKey: process.env.LIT_RELAY_API_KEY,
+                relayApiKey: "2a012b3f-1253-4760-86ba-e013306236f7_Anuj",
             },
             litNodeClient
         });
@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log(keyId,'KEY ID')
         const pubkey = await session.computePublicKeyFromAuthMethod(authMethod);
         console.log("BC", pubkey)
-        const data = { message: 'Its all good man' };
+        const data = { message: 'Its all good man', key:pubkey };
         res.status(200).json(data);
     } 
 

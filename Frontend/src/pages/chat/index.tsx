@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Client } from '@xmtp/xmtp-js';
 import { getWalletClient } from '@wagmi/core'
 
-
 let wallet = null;
 let xmtp = null;
 let WALLET_TO = null;

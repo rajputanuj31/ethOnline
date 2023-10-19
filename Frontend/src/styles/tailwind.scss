@@ -70,6 +70,39 @@ button {
   margin-top: 2px;
   cursor: pointer; /* Show a pointer cursor on hover */
 }
+/* Home.css */
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 20px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+.input-group label {
+  margin-right: 10px;
+}
+
+.action-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  margin: 0 5px;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}
 
 .nav-item{
   margin-left: auto;
