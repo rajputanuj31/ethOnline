@@ -106,7 +106,7 @@ export default function Home() {
                 )}
                 {currentStep === 3 && (
                     <div>
-                        <div style={{ borderRight: '1px solid #ccc', borderTop: '1px solid #ccc', borderLeft: '1px solid #ccc', height: '300px', overflowY: 'scroll', color: "white", display: "flex" }}>
+                        <div style={{ borderRight: '1px solid #ccc', borderTop: '1px solid #ccc', borderLeft: '1px solid #ccc', borderTopLeftRadius: '10px' , borderTopRightRadius: '10px',height: '500px', overflowY: 'scroll', color: "white", display: "flex" }}>
                             <div className="chat-addresses" style={{ borderRight: '4px dotted gray' }}>
 
                             </div>

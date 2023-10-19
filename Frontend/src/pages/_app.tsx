@@ -16,7 +16,7 @@ import NavBar from "@components/NavBar";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, polygon, optimism, goerli, polygonMumbai],
-  [infuraProvider({ apiKey: process.env.INFURA_API })],
+  [infuraProvider({ apiKey: '6012178ed1b445389796a2d160b52fa9' })],
 )
 
 const { connectors } = getDefaultWallets({

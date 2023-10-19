@@ -18,21 +18,22 @@ contract SocialDApp {
         defaultIdentifier = oov3.defaultIdentifier();
     }
 
+    bytes32 public assertionId;
+
     struct Advertisement {
         address owner;
         string content;
         bool isApproved;
-        bytes32 assertionId; 
+        bytes32 assertionId;
     }
 
     mapping(bytes32 => Advertisement) public advertisements;
-    bytes32[] public adIds; 
 
-    function createAdvertisement(string memory content) public payable {
+    function createAdvertisement(string memory content) public payable returns(bytes32){
         uint256 bond = oov3.getMinimumBond(address(defaultCurrency));
         defaultCurrency.transferFrom(msg.sender, address(this), bond);
         defaultCurrency.approve(address(oov3), bond);
-        bytes32 assertionId = oov3.assertTruth(
+        assertionId = oov3.assertTruth(
             bytes(content),
             msg.sender,
             address(this),
@@ -44,19 +45,19 @@ contract SocialDApp {
             bytes32(0)
         );
 
-        advertisements[assertionId] = Advertisement(msg.sender, content, false, assertionId);
-        adIds.push(assertionId);
+        advertisements[assertionId] = Advertisement(msg.sender, content, false,assertionId);
+        return assertionId;
     }
 
     // OptimisticOracleV3 resolve callback.
-    function resolveAdvertisement(bytes32 adId) public {
-        require(advertisements[adId].owner == msg.sender, "You are not the owner of this advertisement.");
-        require(!advertisements[adId].isApproved, "Advertisement is already approved");
-        bool isApproved = oov3.settleAndGetAssertionResult(advertisements[adId].assertionId);
+    function resolveAdvertisement() public {
+        require(advertisements[assertionId].owner == msg.sender, "You are not the owner of this advertisement.");
+        require(!advertisements[assertionId].isApproved, "Advertisement is already approved");
+        bool isApproved = oov3.settleAndGetAssertionResult(assertionId);
 
         if (isApproved) {
             // The advertisement is approved.
-            advertisements[adId].isApproved = true;
+            advertisements[assertionId].isApproved = true;
         }
     }
 
@@ -65,21 +66,25 @@ contract SocialDApp {
         return advertisements[adId].isApproved;
     }
 
-    // Function to retrieve an advertisement by its index.
-    function getAdvertisementByIndex(uint256 index) public view returns (Advertisement memory) {
-        require(index < adIds.length, "Index out of range");
-        bytes32 adId = adIds[index];
-        return advertisements[adId];
+
+    // Function to get the content of an advertisement.
+    function getAdvertisementContent(bytes32 adId) public view returns (string memory) {
+        return advertisements[adId].content;
+    }
+    function getAssertionId() public view returns (bytes32){
+        return assertionId;
     }
 
     // Just return the assertion result. Can only be called once the assertion has been settled.
-    function getAssertionResult(bytes32 adId) public view returns (bool) {
-        return oov3.getAssertionResult(advertisements[adId].assertionId);
+    function getAssertionResult() public view returns (bool) {
+        return oov3.getAssertionResult(assertionId);
     }
 
-    // Function to handle resolved assertion.
-    function assertionResolvedCallback(bytes32 assertionId, bool assertedTruthfully) public {}
+    function getAssertion() public view returns (OptimisticOracleV3Interface.Assertion memory) {
+        return oov3.getAssertion(assertionId);
+    }
+    function assertionResolvedCallback(bytes32 adId, bool assertedTruthfully) public {}
 
     // Function to handle disputed assertion.
-    function assertionDisputedCallback(bytes32 assertionId) public {}
+    function assertionDisputedCallback(bytes32 adId) public {}
 }
