@@ -61,7 +61,6 @@ export default function Home() {
   return (
     <>
       <div>
-        <NavBar />
         <button onClick={sendOTP}>
           Send
         </button>
