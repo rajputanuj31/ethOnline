@@ -7,10 +7,8 @@ function NavBar() {
         <div className="">
             <div className="bg-black mt-1 nav">
                 <img src="logo.png" className="w-64 h-max ml-1 p-1" />
-                <h1 style={{ color: "white", fontSize: "3rem" }}>
-                <Link href="/chat">Chat</Link>
-                </h1>
-                <div className="mt-3 ml-auto mr-4">
+                <Link href="/chat" className="nav-item ">Chat</Link>
+                <div className="mt-3 mr-4">
                     <ConnectButton chainStatus={"none"}/>
                 </div>
             </div>

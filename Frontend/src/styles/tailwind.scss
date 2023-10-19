@@ -9,12 +9,87 @@
 html {
   @apply antialiased;
 }
-body{
+
+body {
   background-color: black;
 }
-button{
+
+button {
   color: azure;
 }
-.nav{
+
+.nav {
   display: flex;
+}
+
+.box {
+  margin-left: auto;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.text-box {
+  margin: 10px;
+  padding: 7px;
+  background-image: linear-gradient(326deg, #854070 0%, #5f0a87 74%);
+  width: fit-content;
+  margin-left: auto;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  font-size: large;
+  font-weight: 600;
+}
+.chat-addresses{
+  width: 40%;
+}
+.name-bar{
+  border-bottom: 2px red;
+}
+.input-text {
+  border-left: 1px solid #ccc; /* Border style, width, and color */
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+.input-box{
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.button-with-background {
+  background-image: url('/send.png');
+  background-size: cover; /* You can adjust the size as needed */
+  width: 60px; /* Set the width of the button */
+  height: 50px; /* Set the height of the button */
+  border: none; /* Remove any default button border */
+  color: white; /* Text color */
+  text-align: center; /* Center text horizontally */
+  text-decoration: none; /* Remove underlines */
+  display: inline-block; /* Display as a block-level element */
+  margin-top: 2px;
+  cursor: pointer; /* Show a pointer cursor on hover */
+}
+
+.nav-item{
+  margin-left: auto;
+  text-align: right;
+  color: white;
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 25px;
+  margin-right: 50px;
+  background: -webkit-linear-gradient(#eee, #686868);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+}
+.nav-item:hover{
+  background: -webkit-linear-gradient(#d3d3d3, #cecece);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: 0.5ms;
+}
+input{
+  color: white
 }

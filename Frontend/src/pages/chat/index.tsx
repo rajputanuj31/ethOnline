@@ -12,6 +12,7 @@ export default function Home() {
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
     const [currentStep, setCurrentStep] = useState(0); // To track the current step 
+    const [WALLET_TO, setWallet_To] = useState('0x937C0d4a6294cdfa575de17382c7076b579DC176')
 
     async function connect_to_xmtp() {
         try {
@@ -33,7 +34,7 @@ export default function Home() {
     }
 
     async function checkIfAddressIsOnNetwork() {
-        WALLET_TO = "0x937C0d4a6294cdfa575de17382c7076b579DC176";
+        // WALLET_TO = "0x937C0d4a6294cdfa575de17382c7076b579DC176";
         if (xmtp) {
             const isOnDevNetwork = await xmtp.canMessage(WALLET_TO);
             console.log(`Can message: ${isOnDevNetwork}`);
@@ -74,12 +75,11 @@ export default function Home() {
                 setChatMessages([...chatMessages, { sender: message.senderAddress, content: message.content }]);
             }
             console.log(chatMessages);
-            
+
         }
     }
 
     function printQrCode() {
-
         console.log(`Generate QR code for address: ${wallet?.address}`);
     }
 
@@ -106,24 +106,56 @@ export default function Home() {
                 )}
                 {currentStep === 3 && (
                     <div>
-                        <div style={{ border: '1px solid #ccc', height: '300px', overflowY: 'scroll', color: "white" }}>
-                            {chatMessages.map((chatMessage, index) => (
-                                <div key={index}>
-                                    <strong>{chatMessage.sender}:</strong> {chatMessage.content}
+                        <div style={{ borderRight: '1px solid #ccc', borderTop: '1px solid #ccc', borderLeft: '1px solid #ccc', height: '300px', overflowY: 'scroll', color: "white", display: "flex" }}>
+                            <div className="chat-addresses" style={{ borderRight: '4px dotted gray' }}>
+
+                            </div>
+                            <div className="w-full ">
+                                <div className="flex name-bar p-2">
+
+                                    <img src="/boredape/0.jpg" className="w-10 h-10 rounded-full" />
+
+                                    {WALLET_TO != '' ?
+                                        <div className="mt-2 ml-2">{WALLET_TO.slice(0, 5)}.....{WALLET_TO.slice(-4)}</div>
+                                        :
+                                        <></>
+                                    }
                                 </div>
-                            ))}
+                                {chatMessages.map((chatMessage, index) => (
+                                    <div key={index}>
+                                        <div className="box">
+                                            <div className="text-box">{chatMessage.content}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
                         </div>
-                        <input
-                            type="text"
-                            placeholder="Enter message"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                        />
-                        <button style={buttonStyle} onClick={sendMessage}>Send Message</button>
-                        <button style={buttonStyle} onClick={streamAllMessages}>streamAllMessages</button>
+                        <div className="input-text flex">
+                            <div className="chat-addresses mb-2" style={{ borderRight: '4px dotted gray' }}>
+
+                            </div>
+                            <div className="w-full flex pb-4" >
+                                <input
+                                    type="text"
+                                    placeholder="Enter message"
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    className="input-box w-5/6 ml-12"
+                                    
+                                />
+                                <div>
+
+                                <button  onClick={sendMessage} className="button-with-background"></button>
+                                </div>
+                            </div>
+
+
+                        </div>
 
                     </div>
                 )}
+                <button style={buttonStyle} onClick={streamAllMessages}>streamAllMessages</button>
             </div>
         </div>
     );
