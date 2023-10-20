@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { createStytchUIClient } from "@stytch/nextjs/ui";
 import NavBar from "@components/NavBar";
 import { ProviderType } from "@lit-protocol/constants";
+import { checkAndSignAuthMessage } from '@lit-protocol/lit-node-client';
+
 
 export default function Home() {
   const [otp, setOTP] = useState("");
@@ -10,7 +12,7 @@ export default function Home() {
   const [jwt, setJwt] = useState("");
   const [pubkey, setPubkey] = useState("");
   const [email, setEmail] = useState(""); // State for the email input
-
+  const [ethAddress, setEthAddress] = useState("");
   const [data, setData] = useState(null);
 
   const client = createStytchUIClient(
@@ -51,12 +53,20 @@ export default function Home() {
       .then((response) => response.json())
       .then((data) => {
         setPubkey(data.key);
-        console.log(data.key);
+        setEthAddress(data.info[0].ethAddress)
         setData(data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
+  }
+
+  const getauthsig = async () => {
+    const expiration = new Date(Date.now() + 1000 * 60 * 60 * 99999).toISOString();
+
+const authSig = LitJsSdk_authBrowser.checkAndSignAuthMessage({chain: 'ethereum', expiration: expiration});
+
+    
   }
 
   return (
@@ -85,8 +95,12 @@ export default function Home() {
       </div>
       <button onClick={lit} className="action-button">Get Public Key</button>
       {pubkey && (
+        <h1 style={{ color: "white" }}>ethAddress: {ethAddress}</h1>
+      )}
+      {pubkey && (
         <h1 style={{ color: "white" }}>Public Key: {pubkey}</h1>
       )}
+      <button onClick={getauthsig}>getauthsig</button>
     </div>
   );
 }

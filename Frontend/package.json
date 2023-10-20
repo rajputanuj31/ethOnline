@@ -14,6 +14,7 @@
     "test-all": "yarn lint && yarn type-check && yarn test"
   },
   "dependencies": {
+    "@lit-protocol/auth-browser": "^2.2.61",
     "@lit-protocol/lit-auth-client": "3.0.5",
     "@lit-protocol/lit-node-client": "^3.0.2",
     "@lit-protocol/lit-node-client-nodejs": "3.0.5",

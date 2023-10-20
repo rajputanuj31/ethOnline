@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Client } from '@xmtp/xmtp-js';
 import { getWalletClient } from '@wagmi/core'
 
+
 let wallet = null;
 let xmtp = null;
 let WALLET_TO = null;
@@ -42,7 +43,16 @@ export default function Home() {
         }
         return false;
     }
-
+    
+    async function streamAllMessages() {
+        if (xmtp) {
+            for await (const message of await xmtp.conversations.streamAllMessages()) {
+                console.log(`New message from ${message.senderAddress}: ${message.content}`);
+                setChatMessages([...chatMessages, { sender: message.senderAddress, content: message.content }]);
+            }
+        }
+    }
+    
     async function startNewConversation() {
         const canMessage = await checkIfAddressIsOnNetwork();
         if (!canMessage) {
@@ -55,6 +65,7 @@ export default function Home() {
             console.log(`Conversation created with ${conversation.peerAddress}`);
             setCurrentStep(3); // Move to the next step
             const messagesInConversation = await conversation.messages();
+            streamAllMessages();
         }
     }
 
@@ -67,16 +78,6 @@ export default function Home() {
         }
     }
 
-    async function streamAllMessages() {
-        if (xmtp) {
-            for await (const message of await xmtp.conversations.streamAllMessages()) {
-                console.log(`New message from ${message.senderAddress}: ${message.content}`);
-                setChatMessages([...chatMessages, { sender: message.senderAddress, content: message.content }]);
-            }
-            console.log(chatMessages);
-
-        }
-    }
 
     function printQrCode() {
         console.log(`Generate QR code for address: ${wallet?.address}`);
@@ -154,7 +155,7 @@ export default function Home() {
 
                     </div>
                 )}
-                <button style={buttonStyle} onClick={streamAllMessages}>streamAllMessages</button>
+                {/* <button style={buttonStyle} onClick={streamAllMessages}>streamAllMessages</button> */}
             </div>
         </div>
     );

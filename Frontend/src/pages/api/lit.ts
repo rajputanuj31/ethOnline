@@ -5,7 +5,7 @@ import { ProviderType } from '@lit-protocol/constants';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     try {
-        
+
         const litNodeClient = new LitNodeClientNodeJs({
             litNetwork: "cayenne",
             debug: false,
@@ -29,24 +29,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         console.log("session");
 
-        const authMethod = await session.authenticate({ 
-            accessToken: req.body.session_jwt 
+        const authMethod = await session.authenticate({
+            accessToken: req.body.session_jwt
         });
 
         console.log("AuthMethod")
 
         const keyId = await session.getAuthMethodId(authMethod);
-        console.log(keyId,'KEY ID')
+        console.log(keyId, 'KEY ID')
         const pubkey = await session.computePublicKeyFromAuthMethod(authMethod);
-        console.log("BC", pubkey)
-        const data = { message: 'Its all good man', key:pubkey };
+
+        // let claimResp = await session.claimKeyId({
+        //     authMethod,
+        // });
+
+        // console.log("claim response public key: ", claimResp.pubkey);
+
+
+        const pkpInfo = await session.fetchPKPsThroughRelayer(authMethod);
+
+        // console.log("BC", pubkey)
+        console.log(pkpInfo);
+        const data = { message: 'Its all good man', key:pubkey ,info:pkpInfo};
         res.status(200).json(data);
-    } 
+    }
 
     catch (error) {
 
         res.status(500).json({ error: 'Breaking Bad' });
-    
+
     }
 
 }
