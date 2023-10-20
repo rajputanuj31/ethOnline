@@ -7,9 +7,6 @@ import { infuraProvider } from 'wagmi/providers/infura'
 
 import "../styles/tailwind.scss"
 import { RainbowKitProvider, getDefaultWallets, darkTheme } from "@rainbow-me/rainbowkit"
-import { createClient } from "viem"
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { InjectedConnector } from 'wagmi/connectors/injected'
 import NavBar from "@components/NavBar";
 
 
@@ -22,7 +19,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 const { connectors } = getDefaultWallets({
   appName: "ETHonline",
   chains,
-  projectId: '123'
+  projectId: '80524cd6d018198e7d8d6bb92e814927'
 });
 
 const wagmiConfig = createConfig({

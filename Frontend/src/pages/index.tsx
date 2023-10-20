@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createStytchUIClient } from "@stytch/nextjs/ui";
 import NavBar from "@components/NavBar";
-import { ProviderType } from "@lit-protocol/constants";
+import { PKPClient } from '@lit-protocol/pkp-client';
 import { checkAndSignAuthMessage } from '@lit-protocol/lit-node-client';
 
 
@@ -14,6 +14,7 @@ export default function Home() {
   const [email, setEmail] = useState(""); // State for the email input
   const [ethAddress, setEthAddress] = useState("");
   const [data, setData] = useState(null);
+  const [pkp, setPKP] = useState(null);
 
   const client = createStytchUIClient(
     "public-token-test-fec2a42b-d51a-4e18-b032-827edd7c3e3f"
@@ -37,6 +38,10 @@ export default function Home() {
     setJwt(authResponse.session_jwt);
   }
 
+  useEffect(()=>{
+    console.log(pkp)
+  },[pkp])
+
   async function lit() {
     const params = {
       user_id: user_id,
@@ -53,6 +58,8 @@ export default function Home() {
       .then((response) => response.json())
       .then((data) => {
         setPubkey(data.key);
+        console.log('Data info', data.info[0])
+        console.log('Data key', data.key);
         setEthAddress(data.info[0].ethAddress)
         setData(data);
       })
@@ -63,10 +70,29 @@ export default function Home() {
 
   const getauthsig = async () => {
     const expiration = new Date(Date.now() + 1000 * 60 * 60 * 99999).toISOString();
+    const authSig = await checkAndSignAuthMessage({ chain: 'ethereum', expiration: expiration });
 
-const authSig = LitJsSdk_authBrowser.checkAndSignAuthMessage({chain: 'ethereum', expiration: expiration});
+    const params = {
+      pub_key: pubkey,
+      Auth_Sig: authSig,
+    }
+    fetch("/api/pkp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    })
+      .then(async (response) => await response.json())
+      .then((data) => {
+        console.log('PKP Idhar',data);
+        setPKP(data);
+      })
+      .catch((error) => {
+        console.log('Error fetching data : ', error)
+      })
 
-    
+      
   }
 
   return (
@@ -100,7 +126,7 @@ const authSig = LitJsSdk_authBrowser.checkAndSignAuthMessage({chain: 'ethereum',
       {pubkey && (
         <h1 style={{ color: "white" }}>Public Key: {pubkey}</h1>
       )}
-      <button onClick={getauthsig}>getauthsig</button>
+      <button className="action-button mt-4" onClick={getauthsig}>getauthsig</button>
     </div>
   );
 }
