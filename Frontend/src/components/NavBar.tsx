@@ -8,14 +8,16 @@ function NavBar() {
         <Link href="/">
           <img src="logo.png" className="ml-1 h-max w-64 p-1" />
         </Link>
-        <Link href="/chat" className="nav-item ">
-          Chat
-        </Link>
-        <Link href="/Uma" className="nav-item ">
-          Uma
-        </Link>
-        <div className="mr-4 mt-3">
-          <ConnectButton chainStatus={"none"} />
+        <div className="ml-auto flex">
+          <Link href="/chat" className="nav-item ">
+            Chat
+          </Link>
+          <Link href="/Uma" className="nav-item ">
+            Uma
+          </Link>
+          <div className="mr-4 mt-3">
+            <ConnectButton chainStatus={"none"} />
+          </div>
         </div>
       </div>
     </div>
