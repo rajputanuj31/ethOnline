@@ -1,63 +1,58 @@
-import { LitAuthClient } from "@lit-protocol/lit-auth-client";
-import { NextApiRequest, NextApiResponse } from "next";
-import { ProviderType } from '@lit-protocol/constants';
+import { ProviderType } from "@lit-protocol/constants"
+import { LitAuthClient } from "@lit-protocol/lit-auth-client"
+import { NextApiRequest, NextApiResponse } from "next"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  try {
+    const litNodeClient = new LitNodeClientNodeJs({
+      litNetwork: "cayenne",
+      debug: false,
+    })
 
-    try {
+    await litNodeClient.connect()
 
-        const litNodeClient = new LitNodeClientNodeJs({
-            litNetwork: "cayenne",
-            debug: false,
-        });
+    console.log(litNodeClient)
 
-        await litNodeClient.connect();
+    const authClient = new LitAuthClient({
+      litRelayConfig: {
+        relayApiKey: "2a012b3f-1253-4760-86ba-e013306236f7_Anuj",
+      },
+      litNodeClient,
+    })
 
-        console.log(litNodeClient)
+    const session = authClient.initProvider(ProviderType.StytchOtp, {
+      userId: req.body.user_id,
+      appId: "project-test-285fd300-a3eb-474c-bff3-da414178786e",
+    })
 
-        const authClient = new LitAuthClient({
-            litRelayConfig: {
-                relayApiKey: "2a012b3f-1253-4760-86ba-e013306236f7_Anuj",
-            },
-            litNodeClient
-        });
+    console.log("session")
 
-        const session = authClient.initProvider(ProviderType.StytchOtp, {
-            userId: req.body.user_id,
-            appId: 'project-test-285fd300-a3eb-474c-bff3-da414178786e'
-        });
+    const authMethod = await session.authenticate({
+      accessToken: req.body.session_jwt,
+    })
 
-        console.log("session");
+    console.log("AuthMethod")
 
-        const authMethod = await session.authenticate({
-            accessToken: req.body.session_jwt
-        });
+    const keyId = await session.getAuthMethodId(authMethod)
+    console.log(keyId, "KEY ID")
+    const pubkey = await session.computePublicKeyFromAuthMethod(authMethod)
 
-        console.log("AuthMethod")
+    // let claimResp = await session.claimKeyId({
+    //     authMethod,
+    // });
 
-        const keyId = await session.getAuthMethodId(authMethod);
-        console.log(keyId, 'KEY ID')
-        const pubkey = await session.computePublicKeyFromAuthMethod(authMethod);
+    // console.log("claim response public key: ", claimResp.pubkey);
 
-        // let claimResp = await session.claimKeyId({
-        //     authMethod,
-        // });
+    const pkpInfo = await session.fetchPKPsThroughRelayer(authMethod)
 
-        // console.log("claim response public key: ", claimResp.pubkey);
-
-
-        const pkpInfo = await session.fetchPKPsThroughRelayer(authMethod);
-
-        // console.log("BC", pubkey)
-        console.log(pkpInfo);
-        const data = { message: 'Its all good man', key:pubkey ,info:pkpInfo};
-        res.status(200).json(data);
-    }
-
-    catch (error) {
-
-        res.status(500).json({ error: 'Breaking Bad' });
-
-    }
-
+    // console.log("BC", pubkey)
+    console.log(pkpInfo)
+    const data = { message: "Its all good man", key: pubkey, info: pkpInfo }
+    res.status(200).json(data)
+  } catch (error) {
+    res.status(500).json({ error: "Breaking Bad" })
+  }
 }
