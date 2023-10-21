@@ -69,6 +69,8 @@ button {
   display: inline-block; /* Display as a block-level element */
   margin-top: 2px;
   cursor: pointer; /* Show a pointer cursor on hover */
+  margin-top: 35px;
+
 }
 /* Home.css */
 .centered-content {
@@ -125,4 +127,11 @@ button {
 }
 input{
   color: white
+}
+.text-white.flex:hover {
+  background-color: #101010; /* Change this to your desired hover background color */
+  cursor: pointer; /* Show a pointer cursor on hover */
+}
+.active{
+  background-color: #1c1c1c;
 }
