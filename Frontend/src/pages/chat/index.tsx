@@ -12,7 +12,7 @@ export default function Home() {
   const [message, setMessage] = useState("")
   const [chatMessages, setChatMessages] = useState([])
   const [currentStep, setCurrentStep] = useState(0) // To track the current step
-  const [walletToInput, setWalletToInput] = useState(""); // State for user input
+  const [walletToInput, setWalletToInput] = useState("") // State for user input
 
   const [contactAddresses, setContactAddresses] = useState<string[]>([
     "0x937C0d4a6294cdfa575de17382c7076b579DC176",
@@ -41,12 +41,12 @@ export default function Home() {
 
   async function checkIfAddressIsOnNetwork() {
     if (xmtp) {
-      const isOnDevNetwork = await xmtp.canMessage(walletToInput); // Use walletToInput
-      console.log(`Can message: ${isOnDevNetwork}`);
-      setCurrentStep(2);
-      return isOnDevNetwork;
+      const isOnDevNetwork = await xmtp.canMessage(walletToInput) // Use walletToInput
+      console.log(`Can message: ${isOnDevNetwork}`)
+      setCurrentStep(2)
+      return isOnDevNetwork
     }
-    return false;
+    return false
   }
 
   async function streamAllMessages() {
@@ -54,15 +54,14 @@ export default function Home() {
       for await (const message of await xmtp.conversations.streamAllMessages()) {
         console.log(
           `New message from ${message.senderAddress}: ${message.content}`
-        );
+        )
         setChatMessages((prevMessages) => [
           ...prevMessages,
           { sender: message.senderAddress, content: message.content },
-        ]);
+        ])
       }
     }
   }
-  
 
   async function startNewConversation() {
     const canMessage = await checkIfAddressIsOnNetwork()
@@ -125,14 +124,14 @@ export default function Home() {
             Connect to xmtp
           </button>
         )}
-         {currentStep === 1 && (
+        {currentStep === 1 && (
           <div>
             <input
               type="text"
               placeholder="Enter walletToInput address"
               value={walletToInput}
               onChange={(e) => setWalletToInput(e.target.value)}
-              style={{color:"black"}}
+              style={{ color: "black" }}
             />
             <button style={buttonStyle} onClick={checkIfAddressIsOnNetwork}>
               Check Address on Network
@@ -203,7 +202,9 @@ export default function Home() {
                 {chatMessages.map((chatMessage, index) => (
                   <div key={index}>
                     <div className="box">
-                      <div className="text-box">{chatMessage.content}:{chatMessage.sender}</div>
+                      <div className="text-box">
+                        {chatMessage.content}:{chatMessage.sender}
+                      </div>
                     </div>
                   </div>
                 ))}

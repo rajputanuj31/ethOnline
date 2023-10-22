@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-const axios = require('axios')
-const FormData = require('form-data')
-const fs = require('fs').promises;
-const JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI0MjQyZTQzYi0zODNiLTRhYjUtYWE1NC04YTc1MzIzYTY4NDQiLCJlbWFpbCI6ImFzaHV0b3NoMjZqaGFAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6IjQ3MWM2MDYzMWQzM2QxMTg3YmUzIiwic2NvcGVkS2V5U2VjcmV0IjoiOWUwZGE3NmI1YWVjYzYyODlkMGU4ZjhjMmEzMjU3YTM5OTYyYWVlYTQ4MTZlOWFmYjI4YTY3ODExYmQ4ZDAwMCIsImlhdCI6MTY5Nzg2ODk2MX0.DbVAXteJ_vWJvrFfB1boOYiiLib3zyf8WytXCjK8_CM"
+
 import {
   useContractRead,
   useContractWrite,
@@ -10,73 +7,82 @@ import {
 } from "wagmi"
 
 import abi from "../../contract/Abi"
+
+const fs = require("fs").promises
+
+const axios = require("axios")
+const FormData = require("form-data")
+
+const JWT =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI0MjQyZTQzYi0zODNiLTRhYjUtYWE1NC04YTc1MzIzYTY4NDQiLCJlbWFpbCI6ImFzaHV0b3NoMjZqaGFAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6IjQ3MWM2MDYzMWQzM2QxMTg3YmUzIiwic2NvcGVkS2V5U2VjcmV0IjoiOWUwZGE3NmI1YWVjYzYyODlkMGU4ZjhjMmEzMjU3YTM5OTYyYWVlYTQ4MTZlOWFmYjI4YTY3ODExYmQ4ZDAwMCIsImlhdCI6MTY5Nzg2ODk2MX0.DbVAXteJ_vWJvrFfB1boOYiiLib3zyf8WytXCjK8_CM"
+
 const ad = "0x3022E5743f9B41c6DC15B3040B530EEE9B2dA0A7"
 
 export default function Uma() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const fileInputRef = useRef(null);
-  const [ipfs, setIPFS] = useState('');
-  const [showResolveButton, setShowResolveButton] = useState(false);
-
+  const [selectedFile, setSelectedFile] = useState(null)
+  const fileInputRef = useRef(null)
+  const [ipfs, setIPFS] = useState("")
+  const [showResolveButton, setShowResolveButton] = useState(false)
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-  };
+    const file = e.target.files[0]
+    setSelectedFile(file)
+  }
 
   const handleDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    console.log(file);
-    setSelectedFile(file);
-  };
+    e.preventDefault()
+    const file = e.dataTransfer.files[0]
+    console.log(file)
+    setSelectedFile(file)
+  }
 
   const handleDragOver = (e) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
 
   const handleClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click();
+      fileInputRef.current.click()
     }
-  };
+  }
 
   useEffect(() => {
     if (selectedFile != null) {
       const handleSubmission = async () => {
-
-        const formData = new FormData();
-        formData.append('file', selectedFile)
+        const formData = new FormData()
+        formData.append("file", selectedFile)
 
         const metadata = JSON.stringify({
-          name: 'File name',
-        });
-        formData.append('pinataMetadata', metadata);
+          name: "File name",
+        })
+        formData.append("pinataMetadata", metadata)
 
         const options = JSON.stringify({
           cidVersion: 0,
         })
-        formData.append('pinataOptions', options);
+        formData.append("pinataOptions", options)
 
         try {
-          const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
-            maxBodyLength: "Infinity",
-            headers: {
-              'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-              'Authorization': `Bearer ${JWT}`
+          const res = await axios.post(
+            "https://api.pinata.cloud/pinning/pinFileToIPFS",
+            formData,
+            {
+              maxBodyLength: "Infinity",
+              headers: {
+                "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+                Authorization: `Bearer ${JWT}`,
+              },
             }
-          });
-          console.log(res.data.IpfsHash);
-          setIPFS(res.data.IpfsHash);
+          )
+          console.log(res.data.IpfsHash)
+          setIPFS(res.data.IpfsHash)
         } catch (error) {
-          console.log(error);
+          console.log(error)
         }
-      };
-      handleSubmission();
+      }
+      handleSubmission()
     }
   }, selectedFile)
-
-
 
   const { config: createAdvertisement } = usePrepareContractWrite({
     address: ad,
@@ -111,9 +117,9 @@ export default function Uma() {
   async function hello() {
     // await writeAdvertisement();
     setTimeout(() => {
-      setShowResolveButton(true);
-    }, 30000);
-    console.log('DOne')
+      setShowResolveButton(true)
+    }, 30000)
+    console.log("DOne")
   }
 
   return (
@@ -127,7 +133,7 @@ export default function Uma() {
       >
         Create an ad
       </button>
-     <button
+      <button
         disabled={!writeResolveAdvertisement}
         onClick={() => writeResolveAdvertisement()}
         className="action-button mt-4"
@@ -144,17 +150,17 @@ export default function Uma() {
 
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: 'auto',
-          height: '500px',
-          width: '700px',
-          border: '2px dashed #ccc',
-          borderRadius: '5px',
-          textAlign: 'center',
-          cursor: 'pointer',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "auto",
+          height: "500px",
+          width: "700px",
+          border: "2px dashed #ccc",
+          borderRadius: "5px",
+          textAlign: "center",
+          cursor: "pointer",
         }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -162,23 +168,28 @@ export default function Uma() {
       >
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%', // Set the height to 100% of the parent div's height
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%", // Set the height to 100% of the parent div's height
           }}
         >
-          {selectedFile == null ? <><p style={{ margin: 0 }} className="text-white">
-            Drag and drop an image here, <br />
-            or click to select a file.
-          </p>
-          </> : <></>}
+          {selectedFile == null ? (
+            <>
+              <p style={{ margin: 0 }} className="text-white">
+                Drag and drop an image here, <br />
+                or click to select a file.
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
 
           <input
             type="file"
             accept="image/*"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
             onChange={handleFileChange}
             ref={fileInputRef}
           />
@@ -186,7 +197,11 @@ export default function Uma() {
         {selectedFile && (
           <div>
             {/* <p>Selected File: {selectedFile.name}</p> */}
-            <img src={URL.createObjectURL(selectedFile)} alt="Selected" className="h-fit w-fit" />
+            <img
+              src={URL.createObjectURL(selectedFile)}
+              alt="Selected"
+              className="h-fit w-fit"
+            />
           </div>
         )}
       </div>
