@@ -122,16 +122,25 @@ export default function Uma() {
 
       <button
         disabled={!writeAdvertisement}
-        onClick={() => hello()}
+        onClick={() => writeAdvertisement()}
+        className="action-button mt-4"
       >
         Create an ad
       </button>
-      {showResolveButton && (<button
+     <button
         disabled={!writeResolveAdvertisement}
         onClick={() => writeResolveAdvertisement()}
+        className="action-button mt-4"
       >
         Resolve
-      </button>)}
+      </button>
+      <button
+        disabled={!writeResolveAdvertisement}
+        onClick={() => contractRead}
+        className="action-button mt-4"
+      >
+        get Result
+      </button>
 
       <div
         style={{
