@@ -5,16 +5,15 @@ import { Client } from "@xmtp/xmtp-js"
 
 let wallet = null
 let xmtp = null
-let WALLET_TO = null
+let walletToInput = null
 let conversation = null
 
 export default function Home() {
   const [message, setMessage] = useState("")
   const [chatMessages, setChatMessages] = useState([])
   const [currentStep, setCurrentStep] = useState(0) // To track the current step
-  const [WALLET_TO, setWallet_To] = useState(
-    "0x937C0d4a6294cdfa575de17382c7076b579DC176"
-  )
+  const [walletToInput, setWalletToInput] = useState(""); // State for user input
+
   const [contactAddresses, setContactAddresses] = useState<string[]>([
     "0x937C0d4a6294cdfa575de17382c7076b579DC176",
   ])
@@ -41,14 +40,13 @@ export default function Home() {
   }
 
   async function checkIfAddressIsOnNetwork() {
-    // WALLET_TO = "0x937C0d4a6294cdfa575de17382c7076b579DC176";
     if (xmtp) {
-      const isOnDevNetwork = await xmtp.canMessage(WALLET_TO)
-      console.log(`Can message: ${isOnDevNetwork}`)
-      setCurrentStep(2) // Move to the next step
-      return isOnDevNetwork
+      const isOnDevNetwork = await xmtp.canMessage(walletToInput); // Use walletToInput
+      console.log(`Can message: ${isOnDevNetwork}`);
+      setCurrentStep(2);
+      return isOnDevNetwork;
     }
-    return false
+    return false;
   }
 
   async function streamAllMessages() {
@@ -56,14 +54,15 @@ export default function Home() {
       for await (const message of await xmtp.conversations.streamAllMessages()) {
         console.log(
           `New message from ${message.senderAddress}: ${message.content}`
-        )
-        setChatMessages([
-          ...chatMessages,
+        );
+        setChatMessages((prevMessages) => [
+          ...prevMessages,
           { sender: message.senderAddress, content: message.content },
-        ])
+        ]);
       }
     }
   }
+  
 
   async function startNewConversation() {
     const canMessage = await checkIfAddressIsOnNetwork()
@@ -73,7 +72,7 @@ export default function Home() {
     }
 
     if (xmtp) {
-      conversation = await xmtp.conversations.newConversation(WALLET_TO)
+      conversation = await xmtp.conversations.newConversation(walletToInput)
       console.log(`Conversation created with ${conversation.peerAddress}`)
       setCurrentStep(3) // Move to the next step
       const messagesInConversation = await conversation.messages()
@@ -85,7 +84,6 @@ export default function Home() {
     if (conversation) {
       const sentMessage = await conversation.send(message)
       console.log(`Message sent: "${sentMessage.content}"`)
-      setChatMessages([...chatMessages, { sender: "You", content: message }])
       setMessage("")
     }
   }
@@ -127,10 +125,19 @@ export default function Home() {
             Connect to xmtp
           </button>
         )}
-        {currentStep === 1 && (
-          <button style={buttonStyle} onClick={checkIfAddressIsOnNetwork}>
-            Check Address on Network
-          </button>
+         {currentStep === 1 && (
+          <div>
+            <input
+              type="text"
+              placeholder="Enter walletToInput address"
+              value={walletToInput}
+              onChange={(e) => setWalletToInput(e.target.value)}
+              style={{color:"black"}}
+            />
+            <button style={buttonStyle} onClick={checkIfAddressIsOnNetwork}>
+              Check Address on Network
+            </button>
+          </div>
         )}
         {currentStep === 2 && (
           <button style={buttonStyle} onClick={startNewConversation}>
@@ -185,9 +192,9 @@ export default function Home() {
                     className="h-10 w-10 rounded-full"
                   />
 
-                  {WALLET_TO != "" ? (
+                  {walletToInput != "" ? (
                     <div className="ml-2 mt-2">
-                      {WALLET_TO.slice(0, 5)}.....{WALLET_TO.slice(-4)}
+                      {walletToInput.slice(0, 5)}.....{walletToInput.slice(-4)}
                     </div>
                   ) : (
                     <></>
@@ -196,7 +203,7 @@ export default function Home() {
                 {chatMessages.map((chatMessage, index) => (
                   <div key={index}>
                     <div className="box">
-                      <div className="text-box">{chatMessage.content}</div>
+                      <div className="text-box">{chatMessage.content}:{chatMessage.sender}</div>
                     </div>
                   </div>
                 ))}
